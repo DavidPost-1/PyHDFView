@@ -8,9 +8,9 @@ Created on Sun Aug 21 15:54:26 2016
 import numpy as np
 from PyQt4 import QtCore, QtGui
 
-class about_window(QtGui.QMessageBox):
+class aboutWindow(QtGui.QMessageBox):
     def __init__(self, parent=None):
-        super(about_window, self).__init__(parent)
+        super(aboutWindow, self).__init__(parent)
         self.setWindowTitle('About PyHDFView')    
         self.setText('''
 PyHDFView is a work in progress.
@@ -21,7 +21,7 @@ I am not responsible for any issues that may arise from the use of this code, in
         ''')
 
 
-class titled_list():
+class titledList():
     def __init__(self, title):
         self.title = QtGui.QLabel(title)
         self.list = QtGui.QListWidget()
@@ -36,14 +36,14 @@ class titled_list():
         self.list.clear()
         
     
-    def addItem(self, item):
+    def add_item(self, item):
         if isinstance(item, str):
             self.list.addItem(item)
         else:
             print("Type Error: Only strings can be added to lists.")
 
         
-class dataset_table():
+class titledTable():
     def __init__(self, title):
         self.title = QtGui.QLabel(title)
         self.table = QtGui.QTableWidget()
@@ -60,14 +60,14 @@ class dataset_table():
         self.table.clear()
     
         
-    def setItem(self, row, col, item):
+    def set_item(self, row, col, item):
         if isinstance(item, str):
             self.table.setItem(row, col, QtGui.QTableWidgetItem(item))
         else:
             print("Type Error: Item must be a str")
     
             
-    def numCols(self, values):
+    def num_cols(self, values):
         value_shape = np.shape(values)
         numcols = 1
         
