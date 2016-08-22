@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
 
-This is a temporary script file.
-
-test test test
 """
 
 import sys
@@ -33,8 +29,9 @@ class mainWindow(QtGui.QMainWindow):
         Initialises the main window. '''
         
         # File structure list and dataset table
-        self.file_items_list = wc.titledList('File Tree (* - Dataset)')
+        self.file_items_list = wc.titledList('File Tree (# - Dataset, ~ - Group)')
         self.file_items_list.list.itemDoubleClicked.connect(self.item_double_clicked) # Add double click listener for file structure list
+        self.file_items_list.list.itemClicked.connect(self.item_clicked) # Add double click listener for file structure list
         self.dataset_table = wc.titledTable('Values')
         
         main_content = QtGui.QHBoxLayout()
@@ -84,18 +81,21 @@ class mainWindow(QtGui.QMainWindow):
         Initialises the menu bar at the top. '''              
         menubar = self.menuBar()
         
+        # Create a File menu and add an open button
         file_menu = menubar.addMenu('&File')
         open_action = QtGui.QAction('&Open', self)
         open_action.setShortcut('Ctrl+o')
         open_action.triggered.connect(self.choose_file)
         file_menu.addAction(open_action)
         
+        # Add an exit button to the file menu
         exit_action = QtGui.QAction('&Exit', self)        
         exit_action.setShortcut('Ctrl+Q')
         exit_action.setStatusTip('Exit application')
         exit_action.triggered.connect(QtGui.qApp.quit)
         file_menu.addAction(exit_action)
         
+        # Create a Help menu and add an about button
         help_menu = menubar.addMenu('&Help')
         about_action = QtGui.QAction('About PyHDFView', self)
         about_action.setStatusTip('About this program')
@@ -113,13 +113,12 @@ class mainWindow(QtGui.QMainWindow):
     def choose_file(self):
         '''
         Opens a QFileDialog window to allow the user to choose the hdf5 file they would like to view. '''
-        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
+        self.filename = QtGui.QFileDialog.getOpenFileName(self, 'Open file', 
                 '/home', filter='*.hdf5 *.h5')
-        self.filename = fname  # In case we need it elsewhere
-        self.filename_label.setText(fname.split('/')[-1])
+        self.filename_label.setText(self.filename.split('/')[-1])
         self.setWindowTitle('PyHDFView - ' + self.filename)
             
-        if len(fname) > 0:
+        if len(self.filename) > 0:
             self.file_items_list.clear()
             self.dataset_table.clear()
             self.open_file()
@@ -155,12 +154,14 @@ class mainWindow(QtGui.QMainWindow):
         # For clarity only the item name is shown, not the full path.
         # Arrows are used to suggest that an item is contained.
         for i in self.file_items:
-            num_intents = (i.count('/')-1) * ' -> ' # -1 because root path is '/'
+            num_intents = (i.count('/')-1) * '  |  ' # -1 because root path is '/'
             group_name = i.split('/')[-1]
             text = num_intents + group_name
             
             if isinstance(self.hdf5_file[i], h5py.Dataset):
-                text = num_intents + ' * ' + group_name
+                text = num_intents + ' # ' + group_name
+            else:
+                text = num_intents + ' ~ ' + group_name
                 
             self.file_items_list.add_item(text)
         
@@ -183,8 +184,8 @@ class mainWindow(QtGui.QMainWindow):
                 plt.figure()
                 plt.plot(self.values, '-o')
                 plt.show()
-        
-        
+    
+                
     def item_double_clicked(self):
         '''
         Responds to a double click on an item in the file_items_list.'''
@@ -224,7 +225,7 @@ class mainWindow(QtGui.QMainWindow):
             self.plot_btn.hide()
 
                 
-
+            
 def main():
     app = QtGui.QApplication(sys.argv)
     pyhdfview_window = mainWindow()
