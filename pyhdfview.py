@@ -31,7 +31,7 @@ class mainWindow(QtGui.QMainWindow):
         # File structure list and dataset table
         self.file_items_list = wc.titledList('File Tree (# - Dataset, ~ - Group)')
         self.file_items_list.list.itemDoubleClicked.connect(self.item_double_clicked) # Add double click listener for file structure list
-        self.file_items_list.list.itemClicked.connect(self.item_clicked) # Add double click listener for file structure list
+        #self.file_items_list.list.itemClicked.connect(self.item_clicked) # Add double click listener for file structure list
         self.dataset_table = wc.titledTable('Values')
         
         main_content = QtGui.QHBoxLayout()
