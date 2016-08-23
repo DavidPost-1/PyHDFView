@@ -134,12 +134,17 @@ class mainWindow(QtGui.QMainWindow):
     def find_items(self, hdf_group):
         '''
         Recursive function for all nested groups and datasets. Populates self.file_items.'''
+        file_items = []
         for i in hdf_group.keys():
-            self.file_items.append(hdf_group[i].name)
+            file_items.append(hdf_group[i].name)
             if isinstance(hdf_group[i], h5py.Group):
-                self.find_items(hdf_group[i])
-                
-                
+                a = self.find_items(hdf_group[i])
+                if len(a) >= 1:
+                    file_items.append(a)
+        
+        return file_items
+        
+        
     def populate_file_file_items_list(self):
         '''
         Function to populate the file structure list on the main window.
@@ -148,7 +153,9 @@ class mainWindow(QtGui.QMainWindow):
         self.file_items_list.clear()
         
         # Find all of the items in this file
-        self.find_items(self.hdf5_file)
+        file_items = self.find_items(self.hdf5_file)
+        self.file_items = file_items
+        print(self.file_items)
         
         # Add these items to the file_items_list.
         # For clarity only the item name is shown, not the full path.

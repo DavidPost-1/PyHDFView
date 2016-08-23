@@ -24,7 +24,7 @@ I am not responsible for any issues that may arise from the use of this code, in
 class titledList():
     def __init__(self, title):
         self.title = QtGui.QLabel(title)
-        self.list = QtGui.QListWidget()
+        self.list = QtGui.QTreeWidget()
         self.list.setMaximumWidth(300)
         
         self.layout = QtGui.QVBoxLayout()
@@ -38,7 +38,9 @@ class titledList():
     
     def add_item(self, item):
         if isinstance(item, str):
-            self.list.addItem(item)
+            row = QtGui.QTreeWidgetItem(self.list)
+            row.setText(0, item)
+            #self.list.addItem(item)
         else:
             print("Type Error: Only strings can be added to lists.")
 
