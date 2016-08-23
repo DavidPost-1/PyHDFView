@@ -42,6 +42,8 @@ class titledTree():
         
     
     def clear(self):
+        self.row_list = []
+        self.group_list = []
         self.list.clear()
         
     
