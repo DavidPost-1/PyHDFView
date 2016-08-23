@@ -17,6 +17,7 @@ Simple python application for viewing HDF5 files in a GUI. File structure can be
 
 
 ## To-do
+- Show group and dataset attributes on single-click
 - Replace QTable with vtable
 - Replace matplotlib with PyQtcharts
 - Choose some colourful icons for the tree view
