@@ -29,9 +29,11 @@ class mainWindow(QtGui.QMainWindow):
         Initialises the main window. '''
         
         # File structure list and dataset table
-        self.file_items_list = wc.titledList('File Tree (# - Dataset, ~ - Group)')
+        self.file_items_list = wc.titledTree('File Tree')
         self.file_items_list.list.itemDoubleClicked.connect(self.item_double_clicked) # Add double click listener for file structure list
-        #self.file_items_list.list.itemClicked.connect(self.item_clicked) # Add double click listener for file structure list
+        self.file_items_list.list.itemExpanded.connect(self.file_items_list.swap_group_icon)
+        self.file_items_list.list.itemCollapsed.connect(self.file_items_list.swap_group_icon)
+        
         self.dataset_table = wc.titledTable('Values')
         
         main_content = QtGui.QHBoxLayout()
@@ -145,6 +147,17 @@ class mainWindow(QtGui.QMainWindow):
         return file_items
         
         
+    def add_item_to_file_list(self, items, item_index, n):
+        item_list = items[item_index]
+
+        for i in range(len(item_list)):
+            if isinstance(item_list[i], str):
+                is_group = isinstance(self.hdf5_file[item_list[i]], h5py.Group)
+                self.file_items_list.add_item(n, item_list[i], is_group)
+            else:
+                self.add_item_to_file_list(item_list, i, n+i)
+                
+        
     def populate_file_file_items_list(self):
         '''
         Function to populate the file structure list on the main window.
@@ -155,22 +168,17 @@ class mainWindow(QtGui.QMainWindow):
         # Find all of the items in this file
         file_items = self.find_items(self.hdf5_file)
         self.file_items = file_items
-        print(self.file_items)
+        #print(self.file_items)
         
         # Add these items to the file_items_list.
         # For clarity only the item name is shown, not the full path.
         # Arrows are used to suggest that an item is contained.
-        for i in self.file_items:
-            num_intents = (i.count('/')-1) * '  |  ' # -1 because root path is '/'
-            group_name = i.split('/')[-1]
-            text = num_intents + group_name
-            
-            if isinstance(self.hdf5_file[i], h5py.Dataset):
-                text = num_intents + ' # ' + group_name
+        for i in range(len(self.file_items)):
+            if isinstance(self.file_items[i], str):
+                is_group = isinstance(self.hdf5_file[file_items[i]], h5py.Group)
+                self.file_items_list.add_item(None, self.file_items[i], is_group)
             else:
-                text = num_intents + ' ~ ' + group_name
-                
-            self.file_items_list.add_item(text)
+                self.add_item_to_file_list(self.file_items, i, i-1)
         
 
     def plot_graph(self):
@@ -196,8 +204,9 @@ class mainWindow(QtGui.QMainWindow):
     def item_double_clicked(self):
         '''
         Responds to a double click on an item in the file_items_list.'''
-        selected_row = self.file_items_list.list.currentRow()
-        text = str(self.file_items[int(selected_row)])
+        selected_row = self.file_items_list.list.currentItem()
+        
+        text = self.file_items_list.full_item_path(selected_row)
         
         # We first want to find out whether this is a new item
         # or if they have double clicked the same item as before.

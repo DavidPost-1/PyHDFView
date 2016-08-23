@@ -21,29 +21,67 @@ I am not responsible for any issues that may arise from the use of this code, in
         ''')
 
 
-class titledList():
+class titledTree():
     def __init__(self, title):
-        self.title = QtGui.QLabel(title)
         self.list = QtGui.QTreeWidget()
+        self.title = QtGui.QLabel(title)
+        #self.list.setHeaderLabel(str(title))
+        self.list.header().close()
         self.list.setMaximumWidth(300)
         
         self.layout = QtGui.QVBoxLayout()
         self.layout.addWidget(self.title)
         self.layout.addWidget(self.list)
         
+        self.row_list = []
+        self.group_list = []
+        
+        self.closed_group_icon = QtGui.QIcon('images/closed_group.png')
+        self.open_group_icon = QtGui.QIcon('images/open_group.png')
+        self.dataset_icon = QtGui.QIcon('images/dataset.png')
+        
     
     def clear(self):
         self.list.clear()
         
     
-    def add_item(self, item):
-        if isinstance(item, str):
-            row = QtGui.QTreeWidgetItem(self.list)
-            row.setText(0, item)
-            #self.list.addItem(item)
+    def add_item(self, parent_index, item, is_group):
+        self.group_list.append(is_group)
+        
+        if parent_index == None:
+            self.row_list.append(QtGui.QTreeWidgetItem(self.list))
+        
         else:
-            print("Type Error: Only strings can be added to lists.")
-
+            self.row_list.append(QtGui.QTreeWidgetItem(self.row_list[parent_index]))
+        
+        if is_group == True:
+            self.row_list[-1].setIcon(0, self.closed_group_icon)
+        else:
+            self.row_list[-1].setIcon(0, self.dataset_icon)
+        
+        item_text = item.split('/')[-1]
+        self.row_list[-1].setText(0, item_text)
+    
+        
+    def full_item_path(self, selected_row):
+        text = selected_row.text(0)
+        parent_row = selected_row.parent()
+        
+        while not parent_row == None:
+            text = parent_row.text(0) + '/' + text
+            parent_row = parent_row.parent()
+        
+        return text
+    
+            
+    def swap_group_icon(self):
+        for i in range(len(self.row_list)):
+            if self.row_list[i].isExpanded():
+                self.row_list[i].setIcon(0, self.open_group_icon)
+            
+            elif self.group_list[i] == True:
+                self.row_list[i].setIcon(0, self.closed_group_icon)
+            
         
 class titledTable():
     def __init__(self, title):
