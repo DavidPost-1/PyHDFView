@@ -17,18 +17,20 @@ Simple python application for viewing HDF5 files in a GUI. File structure can be
 
 
 ## To-do
-- Show group and dataset attributes on single-click
+[s]- Show group and dataset attributes on single-click[/s]
 - Replace QTable with vtable
 - Replace matplotlib with PyQtcharts
 - Choose some colourful icons for the tree view
 - Make a window icon
-- Make tree and table resizable
+- Make tree and table(s) resizable
+- Make attributes table stretch to fill available space
 - Improve plotting functionality
     - For 2D+ data allow the user to choose the axes
     - Allow the user to choose line styles and point markers
-- Make tables show up in the table with a single-click
+[s]- Make tables show up in the table with a single-click[/s]
 - Make double click bring up a table-window
 - Add ability to rename groups and datasets from a right click menu
 - Add ability to modify data in datasets from table-window
 - Add ability to create new group
 - Add ability to create new dataset
+- Add ability to add and modify attributes
