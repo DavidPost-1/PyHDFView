@@ -254,25 +254,30 @@ class mainWindow(QtGui.QMainWindow):
 
             
     def display_attributes(self):
+        # reset the value
         self.attribute_table.clear()
         
+        # Find the path of the selected item and extract attrs
         selected_row = self.file_items_list.list.currentItem()
         path = self.file_items_list.full_item_path(selected_row)
         attributes = list(self.hdf5_file[path].attrs.items())
         num_attributes = len(attributes)
         
+        # Prepare the table by setting the appropriate row number
         self.attribute_table.setRowCount(num_attributes)
         self.attribute_table.setColumnCount(0)
         if num_attributes > 0:
             self.attribute_table.setColumnCount(2)
         
+        # Populate the table
         for i in range(num_attributes):
             self.attribute_table.setItem(i, 0, QtGui.QTableWidgetItem(attributes[i][0]))
-            
             value = attributes[i][1]
+
+            # h5py gives strings come as encoded numpy arrays, 
+            # extract if necessary.
             if isinstance(value, np.ndarray):      
                 self.attribute_table.setItem(i, 1, QtGui.QTableWidgetItem(str(value[0].decode())))
-            
             else:
                 self.attribute_table.setItem(i, 1, QtGui.QTableWidgetItem(str(value)))
         
@@ -281,7 +286,7 @@ class mainWindow(QtGui.QMainWindow):
     def item_double_clicked(self):
         '''
         Responds to a double click on an item in the file_items_list.'''
-        self.display_dataset()
+        # self.display_dataset()
         
     
     def item_clicked(self):
