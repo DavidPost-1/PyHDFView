@@ -33,7 +33,7 @@ class mainWindow(QtGui.QMainWindow):
         
         # File structure list and dataset table
         self.file_items_list = wc.titledTree('File Tree')
-        self.file_items_list.list.itemDoubleClicked.connect(self.item_double_clicked) # Add double click listener for file structure list
+        self.file_items_list.list.itemClicked.connect(self.item_clicked)
         self.file_items_list.list.itemExpanded.connect(self.file_items_list.swap_group_icon)
         self.file_items_list.list.itemCollapsed.connect(self.file_items_list.swap_group_icon)
         
@@ -43,6 +43,7 @@ class mainWindow(QtGui.QMainWindow):
 
         # Make attribute table
         self.attribute_table = QtGui.QTableWidget()
+        self.attribute_table.setShowGrid(True)
         
         # Initialise all buttons
         self.general_buttons = self.initialise_general_buttons()
@@ -214,9 +215,9 @@ class mainWindow(QtGui.QMainWindow):
                 plt.plot(self.values, '-o')
                 plt.show()
 
+                
     def display_dataset(self):
         selected_row = self.file_items_list.list.currentItem()
-
         text = self.file_items_list.full_item_path(selected_row)
 
         # We first want to find out whether this is a new item
@@ -243,7 +244,7 @@ class mainWindow(QtGui.QMainWindow):
                         for j in range(numcols):
                             self.dataset_table.set_item(i, j, str(self.values[i,j]))
                     else:
-                        self.dataset_table.set_item(0, i, str(self.values[i]))
+                        self.dataset_table.set_item(i, 0, str(self.values[i]))
 
         elif isinstance(self.hdf5_file[text], h5py.Group):
             self.current_dataset = text
@@ -251,12 +252,41 @@ class mainWindow(QtGui.QMainWindow):
             self.values = np.array([])
             self.plot_btn.hide()
 
+            
+    def display_attributes(self):
+        self.attribute_table.clear()
+        
+        selected_row = self.file_items_list.list.currentItem()
+        path = self.file_items_list.full_item_path(selected_row)
+        attributes = list(self.hdf5_file[path].attrs.items())
+        num_attributes = len(attributes)
+        
+        self.attribute_table.setRowCount(num_attributes)
+        self.attribute_table.setColumnCount(0)
+        if num_attributes > 0:
+            self.attribute_table.setColumnCount(2)
+        
+        for i in range(num_attributes):
+            self.attribute_table.setItem(i, 0, QtGui.QTableWidgetItem(attributes[i][0]))
+            
+            value = attributes[i][1]
+            if isinstance(value, np.ndarray):      
+                self.attribute_table.setItem(i, 1, QtGui.QTableWidgetItem(str(value[0].decode())))
+            
+            else:
+                self.attribute_table.setItem(i, 1, QtGui.QTableWidgetItem(str(value)))
+        
+            
 
     def item_double_clicked(self):
         '''
         Responds to a double click on an item in the file_items_list.'''
         self.display_dataset()
-
+        
+    
+    def item_clicked(self):
+        self.display_attributes()
+        self.display_dataset()
 
 
 def main():
