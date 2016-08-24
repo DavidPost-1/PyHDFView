@@ -27,35 +27,41 @@ class mainWindow(QtGui.QMainWindow):
     def initialise_user_interface(self):
         '''
         Initialises the main window. '''
-
+        grid = QtGui.QGridLayout()
+        grid.setSpacing(10)
+        
+        
         # File structure list and dataset table
         self.file_items_list = wc.titledTree('File Tree')
         self.file_items_list.list.itemDoubleClicked.connect(self.item_double_clicked) # Add double click listener for file structure list
         self.file_items_list.list.itemExpanded.connect(self.file_items_list.swap_group_icon)
         self.file_items_list.list.itemCollapsed.connect(self.file_items_list.swap_group_icon)
-
+        
+        
+        # Make dataset table
         self.dataset_table = wc.titledTable('Values')
-
-        main_content = QtGui.QHBoxLayout()
-        main_content.addLayout(self.file_items_list.layout)
-        main_content.addLayout(self.dataset_table.layout)
 
         # Make attribute table
         self.attribute_table = QtGui.QTableWidget()
-
+        
+        # Initialise all buttons
+        self.general_buttons = self.initialise_general_buttons()
+        self.dataset_buttons = self.initialise_dataset_buttons()
+        
         # Add 'extra' window components
         self.make_menu_bar()
-        button_section = self.initialise_buttons()
         self.filename_label = QtGui.QLabel('')
 
         # Add the created layouts and widgets to the window
-        window_layout = QtGui.QVBoxLayout()
-        window_layout.addLayout(button_section)
-        window_layout.addWidget(self.filename_label)
-        window_layout.addLayout(main_content)
-        window_layout.addWidget(self.attribute_table)
+        grid.addLayout(self.general_buttons, 1, 0)
+        grid.addLayout(self.dataset_buttons, 1, 1)
+        grid.addWidget(self.filename_label, 2, 0)
+        grid.addLayout(self.file_items_list.layout, 3, 0)
+        grid.addLayout(self.dataset_table.layout, 3, 1)
+        grid.addWidget(self.attribute_table, 4, 0, 1, 2)
+        
         self.setCentralWidget(QtGui.QWidget(self))
-        self.centralWidget().setLayout(window_layout)
+        self.centralWidget().setLayout(grid)
 
         # Other tweaks to the window such as icons etc
         self.setWindowTitle('PyHDFView')
@@ -63,25 +69,29 @@ class mainWindow(QtGui.QMainWindow):
 
 
 
-    def initialise_buttons(self):
+    def initialise_general_buttons(self):
         '''
         Initialises the buttons in the button bar at the top of the main window. '''
-
         open_file_btn = QtGui.QPushButton('Open File')
         open_file_btn.clicked.connect(self.choose_file)
-
-        self.plot_btn = QtGui.QPushButton('Plot')
-        self.plot_btn.clicked.connect(self.plot_graph)
-        self.plot_btn.hide()
-
+        
         button_section = QtGui.QHBoxLayout()
         button_section.addWidget(open_file_btn)
-        button_section.addStretch()
-        button_section.addWidget(self.plot_btn)
 
         return button_section
 
-
+        
+    def initialise_dataset_buttons(self):
+        self.plot_btn = QtGui.QPushButton('Plot')
+        self.plot_btn.clicked.connect(self.plot_graph)
+        self.plot_btn.hide()
+        
+        button_section = QtGui.QHBoxLayout()
+        button_section.addWidget(self.plot_btn)
+        button_section.addStretch()
+        return button_section
+        
+        
     def make_menu_bar(self):
         '''
         Initialises the menu bar at the top. '''
