@@ -167,8 +167,7 @@ class mainWindow(QtGui.QMainWindow):
 
         for i in range(len(item_list)):
             if isinstance(item_list[i], str):
-                is_group = isinstance(self.hdf5_file[item_list[i]], h5py.Group)
-                self.file_items_list.add_item(n, item_list[i], is_group)
+                self.file_items_list.add_item(n, item_list[i], self.hdf5_file)
             else:
                 self.add_item_to_file_list(item_list, i, n+i)
 
@@ -190,8 +189,7 @@ class mainWindow(QtGui.QMainWindow):
         # Arrows are used to suggest that an item is contained.
         for i in range(len(self.file_items)):
             if isinstance(self.file_items[i], str):
-                is_group = isinstance(self.hdf5_file[file_items[i]], h5py.Group)
-                self.file_items_list.add_item(None, self.file_items[i], is_group)
+                self.file_items_list.add_item(None, self.file_items[i], self.hdf5_file)
             else:
                 self.add_item_to_file_list(self.file_items, i, i-1)
 
