@@ -28,7 +28,6 @@ class titledTree():
         self.title = QtGui.QLabel(title)
         #self.list.setHeaderLabel(str(title))
         self.list.header().close()
-        self.list.setMaximumWidth(300)
 
         self.layout = QtGui.QVBoxLayout()
         self.layout.addWidget(self.title)
@@ -56,8 +55,12 @@ class titledTree():
     def add_item(self, parent_index, item, hdf5_file):
         is_group = isinstance(hdf5_file[item], h5py.Group)
         self.group_list.append(is_group)
+
+
         has_attrs = len(list(hdf5_file[item].attrs.keys())) > 0
         self.has_attrs_list.append(has_attrs)
+
+
 
 
         if parent_index == None:
