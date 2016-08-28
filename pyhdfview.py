@@ -174,7 +174,10 @@ class mainWindow(QtGui.QMainWindow):
         # Open the recent_files file and load in the filename
         with open(self.recent_files_path, 'r') as rf:
             for i in rf:
-                lines.append(i)
+                if not (i == '\n' or i == '\r' or i =='\r\n'):
+                    item = i.replace('\r', '')
+                    item = item.replace('\n', '')
+                    lines.append(item)
 
         num_appearances = lines.count(filename_str)
         if num_appearances > 0:
@@ -201,7 +204,7 @@ class mainWindow(QtGui.QMainWindow):
         Function to write the recent files list to recent_files.txt
         just writes lines to a file up to a max number
         '''
-        max_recent_files = 3
+        max_recent_files = 5
         with open(self.recent_files_path, 'w') as rf:
             for i in lines[0:max_recent_files]:
                 rf.write(i)
