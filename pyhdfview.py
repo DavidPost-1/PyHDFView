@@ -179,14 +179,14 @@ class mainWindow(QtGui.QMainWindow):
                     item = item.replace('\n', '')
                     lines.append(item)
 
-        num_appearances = lines.count(filename_str)
+        num_appearances = lines.count(self.filename)
         if num_appearances > 0:
             for i in range(num_appearances):
-                in_position = lines.index(filename_str)
+                in_position = lines.index(self.filename)
                 lines.pop(in_position)
 
         # Insert the current filename the first item in the list
-        lines.insert(0, filename_str)
+        lines.insert(0, self.filename)
 
         self.write_recent_files_file(lines)
         self.load_recent_files_list()
@@ -207,7 +207,7 @@ class mainWindow(QtGui.QMainWindow):
         max_recent_files = 5
         with open(self.recent_files_path, 'w') as rf:
             for i in lines[0:max_recent_files]:
-                rf.write(i)
+                rf.write(i+'\n')
 
 
     def choose_file(self):
