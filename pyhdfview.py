@@ -25,6 +25,11 @@ class mainWindow(QtGui.QMainWindow):
 
         self.initialise_user_interface()
 
+    def _ctx_menu_cb(self, pos):
+        print("pos:", pos)
+
+        row = self.file_items_list.list.currentItem()
+        print(self.file_items_list.full_item_path(row))
 
     def initialise_user_interface(self):
         '''
@@ -38,6 +43,10 @@ class mainWindow(QtGui.QMainWindow):
         self.file_items_list.list.itemClicked.connect(self.item_clicked)
         self.file_items_list.list.itemExpanded.connect(self.file_items_list.swap_group_icon)
         self.file_items_list.list.itemCollapsed.connect(self.file_items_list.swap_group_icon)
+
+        # Context menu
+        self.file_items_list.list.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.file_items_list.list.customContextMenuRequested.connect(self._ctx_menu_cb)
 
 
         # Make dataset table
