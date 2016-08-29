@@ -37,12 +37,13 @@ class titledTree():
         self.group_list = []
         self.has_attrs_list = []
 
-        self.a_closed_group_icon = QtGui.QIcon('images/a_closed_group.png')
-        self.na_closed_group_icon = QtGui.QIcon('images/closed_group.png')
-        self.a_open_group_icon = QtGui.QIcon('images/a_open_group.png')
-        self.na_open_group_icon = QtGui.QIcon('images/open_group.png')
-        self.a_dataset_icon = QtGui.QIcon('images/a_dataset.png')
-        self.na_dataset_icon = QtGui.QIcon('images/dataset.png')
+        self.icon_closed_group = QtGui.QIcon('images/closed_group.svg')
+        self.icon_open_group = QtGui.QIcon('images/open_group.svg')
+        self.icon_closed_group_with_attrs = QtGui.QIcon('images/closed_group_with_attrs.svg')
+        self.icon_open_group_with_attrs = QtGui.QIcon('images/open_group_with_attrs.svg')
+
+        self.icon_dataset = QtGui.QIcon('images/dataset.svg')
+        self.icon_dataset_with_attrs = QtGui.QIcon('images/dataset_with_attrs.svg')
 
 
     def clear(self):
@@ -61,24 +62,23 @@ class titledTree():
         self.has_attrs_list.append(has_attrs)
 
 
-
-
         if parent_index == None:
             self.row_list.append(QtGui.QTreeWidgetItem(self.list))
 
         else:
             self.row_list.append(QtGui.QTreeWidgetItem(self.row_list[parent_index]))
 
+        # Which icon shall we set.
         if is_group == True:
             if has_attrs:
-                self.row_list[-1].setIcon(0, self.a_closed_group_icon)
+                self.row_list[-1].setIcon(0, self.icon_closed_group_with_attrs)
             else:
-                self.row_list[-1].setIcon(0, self.na_closed_group_icon)
+                self.row_list[-1].setIcon(0, self.icon_closed_group)
         else:
             if has_attrs:
-                self.row_list[-1].setIcon(0, self.a_dataset_icon)
+                self.row_list[-1].setIcon(0, self.icon_dataset_with_attrs)
             else:
-                self.row_list[-1].setIcon(0, self.na_dataset_icon)
+                self.row_list[-1].setIcon(0, self.icon_dataset)
 
         item_text = item.split('/')[-1]
         self.row_list[-1].setText(0, item_text)
@@ -99,15 +99,15 @@ class titledTree():
         for i in range(len(self.row_list)):
             if self.row_list[i].isExpanded():
                 if self.has_attrs_list[i]:
-                    self.row_list[i].setIcon(0, self.a_open_group_icon)
+                        self.row_list[i].setIcon(0, self.icon_open_group_with_attrs)
                 else:
-                    self.row_list[i].setIcon(0, self.na_open_group_icon)
+                    self.row_list[i].setIcon(0, self.icon_open_group)
 
             elif self.group_list[i] == True:
                 if self.has_attrs_list[i]:
-                    self.row_list[i].setIcon(0, self.a_closed_group_icon)
+                    self.row_list[i].setIcon(0, self.icon_closed_group_with_attrs)
                 else:
-                    self.row_list[i].setIcon(0, self.na_closed_group_icon)
+                    self.row_list[i].setIcon(0, self.icon_closed_group)
                 #self.row_list[i].setIcon(0, self.closed_group_icon)
 
 
