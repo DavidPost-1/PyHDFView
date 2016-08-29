@@ -1,8 +1,12 @@
 # PyHDFView
 
-Currently in BETA and should not be used for anything important. Please make appropriate backups if you intend to use this program to avoid any data loss.
+Currently in alpha and should not be used for anything important. Please make appropriate backups if you intend to use this program to avoid any data loss.
 
 Simple python application for viewing HDF5 files in a GUI. File structure can be seen in the tree view. Datasets can be viewed as a table and basic plots can be brought up in a matplotlib window.
+
+### Latest Screenshot
+![img](https://github.com/DavidPost-1/PyHDFView/blob/master/screenshots/29-08-2016.png?raw=true)
+
 
 ## System Requirements
 - Python (3.5) - other versions untested
