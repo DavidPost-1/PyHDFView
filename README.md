@@ -37,3 +37,6 @@ Simple python application for viewing HDF5 files in a GUI. File structure can be
 - ~~Show group and dataset attributes on single-click~~
 - ~~Make items with attributes have a marker icon~~
 - ~~Make tables show up in the table with a single-click~~
+
+## Thanks
+Icons - Thanks to https://www.elegantthemes.com for the GPL flat icons
