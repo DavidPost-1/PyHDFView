@@ -38,12 +38,11 @@ class mainWindow(QtGui.QMainWindow):
         self.file_items_list.list.itemClicked.connect(self.item_clicked)
         self.file_items_list.list.itemExpanded.connect(self.file_items_list.swap_group_icon)
         self.file_items_list.list.itemCollapsed.connect(self.file_items_list.swap_group_icon)
-
-
-
+        self.file_items_list.list.setMinimumWidth(250)
 
         # Make dataset table
         self.dataset_table = wc.titledTable('Values')
+        self.dataset_table.table.setMinimumWidth(350)
 
         # Make attribute table
         self.attribute_table = QtGui.QTableWidget()
@@ -53,7 +52,7 @@ class mainWindow(QtGui.QMainWindow):
         self.general_buttons = self.initialise_general_buttons()
         self.dataset_buttons = self.initialise_dataset_buttons()
 
-        self.file_items_list.list.setMaximumWidth(300)
+        self.resizeEvent = self.onresize
 
 
         # Add 'extra' window components
@@ -76,7 +75,10 @@ class mainWindow(QtGui.QMainWindow):
         self.setWindowTitle('PyHDFView')
         #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
 
-
+    def onresize(self, event):
+        self.file_items_list.list.setMaximumWidth(0.7*self.width())
+        self.file_items_list.list.setMaximumWidth(0.3*self.width())
+        self.attribute_table.setMaximumHeight(0.3*self.height())
 
     def initialise_general_buttons(self):
         '''
