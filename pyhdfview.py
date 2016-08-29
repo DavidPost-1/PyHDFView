@@ -40,6 +40,8 @@ class mainWindow(QtGui.QMainWindow):
         self.file_items_list.list.itemCollapsed.connect(self.file_items_list.swap_group_icon)
 
 
+
+
         # Make dataset table
         self.dataset_table = wc.titledTable('Values')
 
@@ -51,14 +53,17 @@ class mainWindow(QtGui.QMainWindow):
         self.general_buttons = self.initialise_general_buttons()
         self.dataset_buttons = self.initialise_dataset_buttons()
 
+        self.file_items_list.list.setMaximumWidth(300)
+
+
         # Add 'extra' window components
         self.make_menu_bar()
         self.load_recent_files_list()
         self.filename_label = QtGui.QLabel('')
 
         # Add the created layouts and widgets to the window
-        grid.addLayout(self.general_buttons, 1, 0)
-        grid.addLayout(self.dataset_buttons, 1, 1)
+        grid.addLayout(self.general_buttons, 1, 0, QtCore.Qt.AlignLeft)
+        grid.addLayout(self.dataset_buttons, 1, 1, QtCore.Qt.AlignLeft)
         grid.addWidget(self.filename_label, 2, 0)
         grid.addLayout(self.file_items_list.layout, 3, 0)
         grid.addLayout(self.dataset_table.layout, 3, 1)
@@ -81,7 +86,7 @@ class mainWindow(QtGui.QMainWindow):
 
         button_section = QtGui.QHBoxLayout()
         button_section.addWidget(open_file_btn)
-        button_section.addStretch(0)
+        #button_section.addStretch(0)
 
         return button_section
 
@@ -93,7 +98,6 @@ class mainWindow(QtGui.QMainWindow):
 
         button_section = QtGui.QHBoxLayout()
         button_section.addWidget(self.plot_btn)
-        button_section.addStretch()
         return button_section
 
 
