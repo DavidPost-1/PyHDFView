@@ -52,12 +52,12 @@ class mainWindow(QtGui.QMainWindow):
         self.general_buttons = self.initialise_general_buttons()
         self.dataset_buttons = self.initialise_dataset_buttons()
 
+        # Set maximum widths when the window is resized.
         self.resizeEvent = self.onresize
-
 
         # Add 'extra' window components
         self.make_menu_bar()
-        self.load_recent_files_list()
+        self.make_recent_files_menu()
         self.filename_label = QtGui.QLabel('')
 
         # Add the created layouts and widgets to the window
@@ -141,20 +141,13 @@ class mainWindow(QtGui.QMainWindow):
         self.about_window.show()
 
 
-    def load_recent_files_list(self):
+    def make_recent_files_menu(self):
         '''
         Reads recent files from the recent_files.txt file and adds items to the
         Recent Files menu.
         '''
-        lines = []
-
         # Open the recent_files file and load in the filename
-        with open(self.recent_files_path, 'r') as rf:
-            for i in rf:
-                if not (i == '\n' or i == '\r' or i =='\r\n'):
-                    item = i.replace('\r', '')
-                    item = item.replace('\n', '')
-                    lines.append(item)
+        lines = self.read_recent_files_file()
 
         self.recent_files_list = []
         for i in range(len(lines)):
@@ -173,17 +166,8 @@ class mainWindow(QtGui.QMainWindow):
         '''
         self.recent_files_menu.clear()
 
-        in_position = -1
-        lines = []
-        filename_str = self.filename+'\n'
-
         # Open the recent_files file and load in the filename
-        with open(self.recent_files_path, 'r') as rf:
-            for i in rf:
-                if not (i == '\n' or i == '\r' or i =='\r\n'):
-                    item = i.replace('\r', '')
-                    item = item.replace('\n', '')
-                    lines.append(item)
+        lines = self.read_recent_files_file()
 
         num_appearances = lines.count(self.filename)
         if num_appearances > 0:
@@ -195,7 +179,7 @@ class mainWindow(QtGui.QMainWindow):
         lines.insert(0, self.filename)
 
         self.write_recent_files_file(lines)
-        self.load_recent_files_list()
+        self.make_recent_files_menu()
 
 
     def open_recent_file(self, filename):
@@ -203,6 +187,21 @@ class mainWindow(QtGui.QMainWindow):
         Function to run when a recent file is clicked
         '''
         self.initiate_file_open(filename)
+
+
+    def read_recent_files_file(self):
+        lines = []
+        try:
+            with open(self.recent_files_path, 'r') as rf:
+                for i in rf:
+                    if len(i) > 5:
+                        item = i.replace('\n', '')
+                        lines.append(item)
+        except FileNotFoundError:
+            temp_file = open(self.recent_files_path, 'w')
+            temp_file.close()
+
+        return lines
 
 
     def write_recent_files_file(self, lines):
@@ -225,25 +224,25 @@ class mainWindow(QtGui.QMainWindow):
 
 
     def initiate_file_open(self, filename):
-            old_filename = self.filename
-            self.filename = filename
+            self.recent_files_reset()
+            self.clear_file_items()
+            self.dataset_table.clear()
+            self.attribute_table.clear()
 
             try:
                 self.open_file(filename)
-                self.recent_files_reset()
-                self.clear_file_items()
-                self.dataset_table.clear()
+                self.filename = filename
                 self.populate_file_file_items_list()
-
                 self.filename_label.setText(filename.split('/')[-1])
                 self.setWindowTitle('PyHDFView - ' + filename)
             except:
-                self.recent_files_reset()
+                self.filename = '' # if it didn't work keep the old value
+                self.filename_label.setText('')
+                self.setWindowTitle('PyHDFView')
                 self.clear_file_items()
                 self.dataset_table.clear()
-                self.filename = '' # if it didn't work keep the old value
+                self.attribute_table.clear()
                 print("Error opening file")
-
 
 
     def open_file(self, filename):
