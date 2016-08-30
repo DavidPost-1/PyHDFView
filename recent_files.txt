@@ -1,0 +1,3 @@
+/home/dave/Documents/test3.h5
+/home/dave/Documents/test2.hdf5
+/home/dave/Documents/test1.hdf5
