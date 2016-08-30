@@ -75,10 +75,12 @@ class mainWindow(QtGui.QMainWindow):
         self.setWindowTitle('PyHDFView')
         #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
 
+
     def onresize(self, event):
         self.file_items_list.list.setMaximumWidth(0.7*self.width())
         self.file_items_list.list.setMaximumWidth(0.3*self.width())
         self.attribute_table.setMaximumHeight(0.3*self.height())
+
 
     def initialise_general_buttons(self):
         '''
@@ -224,25 +226,25 @@ class mainWindow(QtGui.QMainWindow):
 
 
     def initiate_file_open(self, filename):
-            self.recent_files_reset()
+        self.filename = filename
+        self.recent_files_reset()
+        self.clear_file_items()
+        self.dataset_table.clear()
+        self.attribute_table.clear()
+
+        try:
+            self.open_file(filename)
+            self.populate_file_file_items_list()
+            self.filename_label.setText(filename.split('/')[-1])
+            self.setWindowTitle('PyHDFView - ' + filename)
+        except:
+            self.filename = '' # if it didn't work keep the old value
+            self.filename_label.setText('')
+            self.setWindowTitle('PyHDFView')
             self.clear_file_items()
             self.dataset_table.clear()
             self.attribute_table.clear()
-
-            try:
-                self.open_file(filename)
-                self.filename = filename
-                self.populate_file_file_items_list()
-                self.filename_label.setText(filename.split('/')[-1])
-                self.setWindowTitle('PyHDFView - ' + filename)
-            except:
-                self.filename = '' # if it didn't work keep the old value
-                self.filename_label.setText('')
-                self.setWindowTitle('PyHDFView')
-                self.clear_file_items()
-                self.dataset_table.clear()
-                self.attribute_table.clear()
-                print("Error opening file")
+            print("Error opening file")
 
 
     def open_file(self, filename):
@@ -301,21 +303,46 @@ class mainWindow(QtGui.QMainWindow):
     def plot_graph(self):
         '''
         Plots the data that is currently shown in the dataset table. Currently opens a matplotlib figure and shows using the users current backend.'''
+        #self.a = wc.plotOptionWindow()
+        #self.a.show()
+
+        selected_items = self.dataset_table.table.selectedItems()
+
+        if len(selected_items) > 0:
+            min_row = selected_items[0].row()
+            max_row = selected_items[-1].row() + 1
+
+            min_col = selected_items[0].column()
+            max_col = selected_items[-1].column() + 1
+
+        else:
+            shape = np.shape(self.values)
+            if len(shape) == 1:
+                max_col = 1
+            else:
+                max_col = shape[1]
+
+            min_row = 0
+            max_row = shape[0]
+            min_col = 0
+
         plt.ion()
         plt.close('all')
-        if len(self.values) > 0:
+
+        if len(self.values) > 0: # for 2d data each plot col by col
             if len(np.shape(self.values)) > 1:
                 plt.figure()
-                for i in range(len(self.values)):
-                    plt.plot(self.values[i], '-o', label=str(i))
+                for i in range(min_row, max_row):
+                    plt.plot(self.values[i, min_col:max_col], '-o', label=str(i))
 
                 plt.legend(loc=0)
                 plt.show()
 
-            else:
+            else: # for 1d data we plot a row
                 plt.figure()
-                plt.plot(self.values, '-o')
+                plt.plot(self.values[min_row:max_row], '-o')
                 plt.show()
+
 
 
     def display_dataset(self):
