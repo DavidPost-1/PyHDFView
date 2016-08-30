@@ -21,6 +21,11 @@ For comments, issues etc contact me at davidpost-1@outlook.com.
 I am not responsible for any issues that may arise from the use of this code, including any loss of data etc.
         ''')
 
+class plotOptionWindow(QtGui.QWidget):
+    def __init__(self, parent=None):
+        super(plotOptionWindow, self).__init__(parent)
+        self.setWindowTitle('Plot Options')
+
 
 class titledTree():
     def __init__(self, title):
