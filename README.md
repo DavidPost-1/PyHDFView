@@ -7,18 +7,15 @@ Simple python application for viewing HDF5 files in a GUI. File structure can be
 ### Latest Screenshot
 ![img](https://github.com/DavidPost-1/PyHDFView/blob/master/screenshots/30-08-2016.png?raw=true)
 
-
 ## System Requirements
 - Python (3.5) - other versions untested
 - HDF5
-
 
 ## Python Package Requirements
 - numpy
 - matplotlib
 - h5py
 - pyqt
-
 
 ## To-do
 - Refactor the load_file functions
@@ -42,6 +39,10 @@ Simple python application for viewing HDF5 files in a GUI. File structure can be
 - ~~Show group and dataset attributes on single-click~~
 - ~~Make items with attributes have a marker icon~~
 - ~~Make tables show up in the table with a single-click~~
+
+## Licence
+This program has been distributed under the GPL 3.0+ Licence.
+
 
 ## Thanks
 Icons - Thanks to https://www.elegantthemes.com for the GPL flat icons
